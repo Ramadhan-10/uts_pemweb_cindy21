@@ -1,0 +1,6 @@
+tunnel: acaa97e8-cea5-4f78-a7c9-47d2b3e599eb
+credentials-file: C:\Users\Asus\.cloudflared\acaa97e8-cea5-4f78-a7c9-47d2b3e599eb.json
+
+ingress:
+  - hostname: gallerys.my.id
+    service: http://localhost:8080
