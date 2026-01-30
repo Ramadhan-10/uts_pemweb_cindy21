@@ -5,7 +5,7 @@ include 'includes/header.php';
 
 // Jika sudah login, langsung lempar ke dashboard (cegah akses halaman login lagi)
 if (isset($_SESSION['user_id'])) {
-    header("Location: dashboard.php");
+    header("Location: admin/index.php");
     exit;
 }
 
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Login Berhasil
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
-        header("Location: dashboard.php"); // Pindah ke halaman admin
+        header("Location: admin/index.php"); // Pindah ke halaman admin
         exit;
     } else {
         $error = "Username atau Password salah!";

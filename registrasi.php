@@ -1,47 +1,40 @@
 <?php 
-// Memanggil koneksi database dan header
 include 'includes/db.php'; 
 include 'includes/header.php'; 
 
 $pesan_notifikasi = "";
 
-// LOGIKA PHP: MENERIMA DATA FORM SAAT TOMBOL DIKLIK
+// Get divisi list for dropdown
+$divisi_list = $pdo->query("SELECT * FROM tabel_divisi WHERE id > 1")->fetchAll();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    // Ambil data dari form
     $nama = htmlspecialchars($_POST['nama']);
     $nim = htmlspecialchars($_POST['nim']);
     $email = htmlspecialchars($_POST['email']);
     $jurusan = htmlspecialchars($_POST['jurusan']);
-    $divisi = htmlspecialchars($_POST['divisi']);
+    $divisi_id = $_POST['divisi_id'];
     $alasan = htmlspecialchars($_POST['alasan']);
 
-    // Cek apakah data wajib sudah terisi
     if(!empty($nama) && !empty($nim) && !empty($email)) {
-        
         try {
-            // Query Insert data ke tabel database 'pendaftar'
-            $sql = "INSERT INTO tabel_pendaftar (nama_lengkap, nim, email, jurusan, divisi_pilihan, alasan_bergabung) 
-                    VALUES (:nama, :nim, :email, :jurusan, :divisi, :alasan)";
+            $sql = "INSERT INTO tabel_pendaftar (nama_lengkap, nim, email, jurusan, divisi_id, alasan_bergabung) 
+                    VALUES (:nama, :nim, :email, :jurusan, :divisi_id, :alasan)";
             
             $stmt = $pdo->prepare($sql);
-            
-            // Binding data untuk keamanan
             $data = [
                 'nama' => $nama,
                 'nim' => $nim,
                 'email' => $email,
                 'jurusan' => $jurusan,
-                'divisi' => $divisi,
+                'divisi_id' => $divisi_id,
                 'alasan' => $alasan
             ];
 
-            // Eksekusi simpan
             if($stmt->execute($data)) {
                 $pesan_notifikasi = "
                 <div class='alert alert-success alert-dismissible fade show' role='alert'>
                     <strong>Berhasil!</strong> Data pendaftaranmu sudah kami terima.
-                    <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
                 </div>";
             }
         } catch (PDOException $e) {
@@ -94,11 +87,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold text-primary">Divisi Pilihan</label>
-                            <select class="form-select" name="divisi" required>
+                            <select class="form-select" name="divisi_id" required>
                                 <option value="" selected disabled>-- Pilih Divisi --</option>
-                                <option value="Tradisional">Tradisional</option>
-                                <option value="Modern">Modern</option>
-                                <option value="Kpop">Kpop</option>
+                                <?php foreach($divisi_list as $d): ?>
+                                    <option value="<?= $d['id'] ?>"><?= htmlspecialchars($d['nama_divisi']) ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
